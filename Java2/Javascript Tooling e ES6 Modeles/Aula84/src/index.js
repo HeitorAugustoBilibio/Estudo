@@ -1,5 +1,6 @@
-import {nome2, sobrenome, idade, soma} from './module1';
+import Pessoa, {nome, sobrenome, idade} from './module1';
+const p1 = new Pessoa(nome, sobrenome);
+console.log(p1)
+console.log(nome, sobrenome, idade)
 
 
-console.log(nome2, sobrenome, idade);
-console.log(soma(5, 6))
