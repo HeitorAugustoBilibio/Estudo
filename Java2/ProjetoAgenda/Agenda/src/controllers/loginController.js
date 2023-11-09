@@ -2,7 +2,8 @@ const { async } = require('regenerator-runtime');
 const Login = require('../models/LoginModel')
 
 exports.index = (req, res) => {
-    res.render('login');
+    if(req.session.user) return res.render('login-logado')
+    return res.render('login');
 };
 
 exports.register = async (req, res) => {
@@ -28,10 +29,6 @@ exports.register = async (req, res) => {
         console.log(e)
         return res.render('404')
     }
-
-
-    
-    
 
 };
 
@@ -72,6 +69,6 @@ exports.login = async (req, res) => {
 
 exports.logout = (req, res) => {
     req.session.destroy();
-    req.redirect('/')
+    res.redirect('/')
 }
 
