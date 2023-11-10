@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const { async } = require('regenerator-runtime');
 const validator = require('validator')
 
-const contatoSchema = new mongoose.Schema({
+const ContatoSchema = new mongoose.Schema({
     nome: {type: String, required: true},
     sobrenome: {type: String, required: false, default: ''},
     email: {type: String, required: false, default: ''},
@@ -10,7 +11,7 @@ const contatoSchema = new mongoose.Schema({
     
 });
 
-const contatoModel = mongoose.model('contato', contatoSchema)
+const ContatoModel = mongoose.model('contato', ContatoSchema)
 
 function Contato(body){
     this.body = body;
@@ -18,23 +19,30 @@ function Contato(body){
     this.contato = null
 }  
 
+Contato.buscaPorId = async function(id) {
+    if(typeof id !== 'string') return;
+    const contato = await ContatoModel.findById(id);
+    return contato;
+  };
+
 Contato.prototype.register = async function(){
     this.valida();
     if(this.errors.length > 0) return;
-    this.contato = await contatoModel.create(this.body);
-    
+    this.contato = await ContatoModel.create(this.body);
 };
 
 
 Contato.prototype.valida = function(){
     this.cleanUp();
+    
     //Valida
     //Email precisa ser valido
-    if(this.body.email && !validator.isEmail(this.body.email))this.errors.push('E-mail inválido');
-    if(!this.body.nome) this.errors.push('Nome é um campo obrigatorio')
-    if(!this.body.email && this.body.telefone) this.errors.push('Pelo menos um contato precisa ser enviado, email ou telefone')
-
-}
+    if(this.body.email && !validator.isEmail(this.body.email)) this.errors.push('E-mail inválido');
+    if(!this.body.nome) this.errors.push('Nome é um campo obrigatório.');
+    if(!this.body.email && !this.body.telefone) {
+      this.errors.push('Pelo menos um contato precisa ser enviado: e-mail ou telefone.');
+    }
+};
 
 Contato.prototype.cleanUp = function() {
     for(const key in this.body){
@@ -49,6 +57,13 @@ Contato.prototype.cleanUp = function() {
         email: this.body.email,
         telefone: this.body.telefone,
     };
-}
+};
+
+Contato.prototype.edit = async function(id) {
+  if(typeof id !== 'string') return;
+  this.valida();
+  if(this.errors.length > 0) return;
+  this.contato = await ContatoModel.findByIdAndUpdate(id, this.body, { new: true });
+};
 
 module.exports = Contato;
