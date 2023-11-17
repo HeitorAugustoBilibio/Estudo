@@ -72,5 +72,5 @@ exports.logout = (req, res) => {
     res.redirect('/')
 }
 
-//Funcionou é sobre isso
+//Funcionou 
 
