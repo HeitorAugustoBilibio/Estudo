@@ -1,3 +1,3 @@
-const nome = 'Heitor';
+const numero = 'Heitor';
 
-console.log(nome);
+console.log(numero);
