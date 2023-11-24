@@ -10,7 +10,7 @@ router.get('/', loginRequired, userController.index); // Lista Usuario
 router.get('/:id', userController.show);// Lista Usuario
 
 router.post('/', userController.store);
-router.put('/', userController.update);
+router.put('/', loginRequired, userController.update);
 router.delete('/', userController.delete);
 
 export default router;
