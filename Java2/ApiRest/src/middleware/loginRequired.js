@@ -17,9 +17,17 @@ export default async (req, res, next) => {
     const { id, email } = dados;
 
     const user = await User.findOne({
-      where:
+      where: {
+        id,
+        email,
+      },
     });
 
+    if (!user) {
+      return res.status(401).json({
+        errors: ['Usuário inválido'],
+      });
+    }
     req.userId = id;
     req.userEmail = email;
     return next();
